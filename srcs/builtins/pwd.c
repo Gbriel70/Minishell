@@ -14,19 +14,31 @@
 
 void	ft_pwd(t_data *ms, char **cmd, char **envp)
 {
-	size_t	i;
+	char	*pwd;
+    char	cwd[PATH_MAX];
 
-	if (!cmd[1])
-	{
-		i = 0;
-		while (envp && envp[i] && ft_strncmp (envp[i], "PWD=", 4))
-			i++;
-		if (envp && envp[i])
-			ft_printf ("%s\n", envp[i] + 4);
-	}
-	else
-	{
-		ft_putstr_fd ("-" PROMPT_MSG ": pwd: " INVALID_USAGE "\n", 2);
-		ms -> error = 42;
-	}
+    (void)envp;
+    if (cmd && cmd[1])
+    {
+        ft_putstr_fd("minishell: pwd: too many arguments\n", STDERR_FILENO);
+        ms->error = 42;
+        return;
+    }
+    if (getcwd(cwd, PATH_MAX))
+    {
+        ft_putstr_fd(cwd, STDOUT_FILENO);
+        ft_putstr_fd("\n", STDOUT_FILENO);
+        ms->error = 0;
+        return;
+    }
+    pwd = get_env_value("PWD", envp);
+    if (pwd)
+    {
+        ft_putstr_fd(pwd, STDOUT_FILENO);
+        ft_putstr_fd("\n", STDOUT_FILENO);
+        ms->error = 0;
+        return;
+    }
+    ft_putstr_fd("minishell: pwd: error retrieving current directory\n", STDERR_FILENO);
+    ms->error = 1;
 }

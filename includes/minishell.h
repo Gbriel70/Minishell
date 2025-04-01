@@ -30,6 +30,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <limits.h>
 
 // STRUCTS
 typedef struct s_token
